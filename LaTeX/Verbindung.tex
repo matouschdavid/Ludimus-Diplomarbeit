@@ -1,0 +1,107 @@
+\section{Lobbycodes (ES)} 
+Das Verbinden zur der Laptop/PC Version von Ludimus erfolgt mit sogenannten Lobbycodes. Dieser wird vom Computer aufgrund der IP-Adresse erzeugt und ermöglicht es einem Smartphone Verbindung zum Rechner aufzubauen.
+\subsection{Verbindungsgeschichte}
+Die Grundart der Verbindung stand von Anfang an fest, Network Streams, aber wie genau soll sich der User nun, möglichst einfach, mit dem Gerät verbinden? Eine Möglichkeit dafür wäre ein Broadcast, bei solchem wird ein Datenpaket an alle, mit dem gleichen Netzwerk verbundenen Geräte geschickt. Bei Ludimus konkret sollte jedes Gerät gefragt werden ob es die Ludimus-App gestartet hat und sich dann bei erfolgreicher Rückmeldung zu der IP-Adresse des Antwortgeräts verbindet. Dieser Approach ist vermutlich der userfreundlichste, da der User hier nichts selbst machen muss und man sich beim Start der App automatisch zum PC/Laptop verbindet. Jedoch gibt es auch hier mehr als genug Probleme, da es nicht bei jedem Netzwerk mit nur einer Implementierung funktioniert, da einige Netzwerke anders eingestellt sind als andere und somit manchen nicht die Art der C\# Implementierung zulassen. Zusätzlich fehlte uns hier das Wissen um alle Arten eines C\# Broadcasts zu implementieren. Keine Broadcasts aber trotzdem das ganze Netzwerk erreichen? Mit unseren Kenntnissen ein Ding der Unmöglichkeit also muss der User die IP-Adresse irgendwie selbst eingeben, aber wie macht man dies so Userfreundlich wie nur möglich? Nun zum einem durch Kürzung der IP-Adresse und zum anderen durch einen QR-Code, welcher aufgrund der IP erzeugt wird. So kann der User entweder einen kurzen Code eingeben oder gemütlich seine Kamera benutzten zum Scannen des IP-QR-Codes.
+\subsection{Erzeugung des Lobbycodes}
+Einfach die IP-Adresse eingeben ist dauert aber zu lange da IP-Adressenen nach dem Muster XXX.XXX.XXX.XXX aufgebaut sind und der User somit ganze 12 Zahlen und 4 Punkte eingeben müsste. Das ganze kann man abkürzen indem die Bytewerte der IP Base64 verschlüsselt werden. Die Base64-Verschlüsselung macht zwar den Code wieder etwas länger jedoch ist er nun ein anschaulicher Code. Zusätzliches Merkmal der Base64 Codierung ist, dass wenn der Verschlüsselte String am Ende nicht auf ein Vielfaches von 3 kommt wird der restliche Platz mit “=” aufgefüllt. Das bedeutet ein String: “agFdeww” auf “agFdeww==” gestreckt. Und bei der Codierung von den Bytewerten der IP-Adressen kommt man zufällig auf genau das, man bekommt einen neunstelligen String welcher am Schluss zwei “=” beinhaltet. Da das aber immer so ist kann man diese einfach vor dem Display des Lobbycodes bereits, im Code, wegschneiden und ihn beim Eingeben des Lobbycodes am Smartphone einfach im Code wieder hinzufügen. So enden wir bei einem siebenstelligen Code welcher für den User einfach und schnell zum eintippen ist. Zusätzlich kann man diesen Code auch noch in einen QR-Code verwandeln und ihm auf dem Smartphone scannen um sich noch mehr Zeit zu ersparen.
+\section{Verbindung (ES)}
+Zur Verbindung der Smartphones mit dem Laptop/PC werden Sockets benutzt. Bei den Spielen und auch im Menü werden keine großen Informationen verschickt da dies nicht nötig ist. Es reicht immer nur den jeweiligen Befehl per String zu schicken, auch wenn das öfters in der Sekunde passiert, reichen die Network Streams dafür perfekt aus und sind die beste Option. Dabei wird auf dem Laptop/PC, in einem Thread, eine Socket-Connection geöffnet welche wartet bis sich jemand auf diese verbindet.Die Socket-Connection selbst wird mit dem Port 9393 geöffnet, so wird sie von keiner anderen Anwendung benutzt und es werden keine anderen Anwendung von ihr blockiert. Der Aufbau der Daten, welche per Network Stream versendet werden sind Key-Value Pairs. Bedeutet jeder String den wir verschicken hat einen Key und ein Value, womit es ermöglicht wird als Key einen Befehl zu schicken und als Value Parameter mit zu verschicken. Als Trennzeichen des Key-Value Pairs wurde sich für “|” entschieden, da die ein selten gebrauchtes zeichen ist und am Smartphone nahezu unmöglich ist eintippen. Zusätzlich wird der String mit einem “;” beendet, dies dient dazu mehrere Parameter mit zu schicken welche dann mithilfe eines “:” von einander getrennt werden. Ein möglicher Informationssatz könnte wie folgt aussehen: “Playername|Eric;” oder “Cards|K7:K3”.
+\section{Aufbau der Verbindung (ES)} 
+\subsection{PC/Laptop/Tablet}
+Bei der Desktop Anwendung von Ludimus gibt es zunächst einen PlayerManager, dieser regelt des Kommunikationsaustausch der Sockets, das Verbinden von neuen Smartphones oder das verlassen bereits verbundener. Der PlayerManager ist dabei ein Singelton da seine Werte für alle immer gleich sein müssen. Wenn der PlayerManager das erste und einzige Mal instanziiert wird, öffnet er einen TCPListener in einem Thread. Dieser wartet so lange bis er geschlossen wird, zusätzlich nimmt er keinen TCPClient mehr an wenn bereits acht Clients verbunden sind. Wenn sich ein Smartphone mit dem Rechner verbindet wird automatisch ein Player Objekt erzeugt, welchem eine ID zugewiesen wird und welchem als Parameter der TCPClient mitgegeben wird. Auch wird das Objekt in eine Liste aller Spieler hinzugefügt. Dieses Player Objekt bietet nun einige Grundfunktionen, wie zum Beispiel den Nachrichten schicken und es beinhaltet aber auch einen Thread welcher die Bytes welche der Network Stream des TCPClients erhält, in einen String umwandelt und schlussendlich in die Unity Queue reiht. Die Unity Queue wird benötigt um wichtige Befehle, wie zum Beispiel einen Scenewechsel durch zu führen, da solche Befehle nur im Main Thread erlaubt sind. Sie wird im Update von Unity öfters die Sekunde geprüft. Man kann mit “enqueue(text)” einfach was einreihen indem man es als Parameter übergibt. Mit “.Count” kann man überprüfen ob in der Queue etwas eingereiht ist, wenn ja kann es mit “.dequeue()”,welches den Wert des eingereihten Strings zurückgibt, entreihen. Also reiht man den geparsten String, welcher vom Network Stream des TCPClients kommt, einfach im Thread ein und im Main Thread wird dann der String ausgewertet und auf Grund seines Wertes dementsprechend gehandelt. Standard sind dabei die Befehle:
+\newline \tab 
+- GetID: die PlayerID wird dem TCPClient geschickt.
+\newline \tab  
+- RestartCurrentGame: startet die Scene in der sich der Spieler gerade befindet \tab neu.
+\newline \tab 
+- CloseConnection: beendet die Verbindung mit dem TCPClient sauber.
+\newline \tab 
+- Playername: Setzt den Spielernamen auf den auf “Playername” folgenden String
+\subsection{Adroid/IOS}
+Bei Android/IOS ist das ganze etwas einfacher, hier gibt es nur den ClientController, da hier nur ein TCPClient, welcher sich auf die eingegebene IP-Adresse(durch Lobbycode) verbindet. Es werden direkt am Start auch noch alle nötigen Infos angefragt und gesendet, die benötigt werden damit das Playerhandling am PC/Laptop einwandfrei funktioniert. Auch hier wird die Unity Queue benutzt um im Main Thread die wichtigen Befehle auszuführen. Standard sind hierbei die Befehle:
+\newline \tab
+- CloseConnection: Beenden der Anwendung und sauberes schließen der \newline \tab TCPClient Verbindung.
+\newline \tab
+- ID: Property ID wird auf den mitgeschickten Value gesetzt.
+\newline \tab 
+- CanRestart: Führt alle Methoden welche auf dem Restart Delegate hängen aus.
+\section{Für Verbindung wichtige Klassen und Methoden / Übergang Schnittstellen (ES)} 
+\subsection{PlayerManager}
+\subsubsection{Übersicht}
+Wird erzeugt sobald sich ein neuer TCPClient auf den TCPListener verbindet. Hat alle relevanten Infos die der Spieler besitzt, wie zum Beispiel: Playername oder PlayerID. Beinhaltet einen Thread zur Kommunikation mit dem jeweiligen Smartphone.
+\subsubsection{Wichtige Fields/Properties}
+Name: InputHandler
+\newline 
+Info: Delegate auf welches man eine Methode der Signatur:
+BeispielName(String key, String value) hängen kann. Wird aufgerufen wenn neue Daten per Network Stream eintreffen und es noch keinen vordefinierten Befehl für sie gibt.
+\newline \newline
+Name: client
+\newline 
+Info: TCPClient welcher auch den Network Stream beinhaltet. Verbindung zum Smartphone
+\newline \newline
+Name: playerName
+\newline 
+Info: Name des Spielers
+\newline \newline
+Name: playerID
+\newline 
+Info: ID des Spielers(reicht von 0-7, je nach Zeitpunkt des Verbindens)
+\newline \newline
+Name: manager
+\newline
+Info: Instanz des PlayerManager’s damit die Kommunikation zwischen Player und Koordinator reibungslos verläuft.
+\newline \newline
+\subsubsection{Wichtige Methoden}
+Name: sendData()
+\newline
+Parameter: string key, string value
+\newline
+Returnvalue: void
+\newline
+Info: schickt dem TCPClient per Network Stream ein Key-Value-Pair. Beim Senden mehrerer value müssen diese hier alle bereits in dem value Parameter vorhanden sein und mit einem “:” getrennt sein.
+\newline \newline
+Name: kickPlayer()
+\newline
+Parameter: keine
+\newline
+Returnvalue: void
+\newline
+Info: Schließt Verbindung mit TCPClient sofort. Ermöglicht es serverseitig Spieler zu entfernen.
+\newline
+\subsection{ClientController}
+\subsubsection{Übersicht}
+Dient zum Verbinden des Smartphones mit dem Laptop/PC. Läuft auf Smartphone. Startet einen TCPClient welcher sich zu der, vorher per Lobbycode eingegebenen IP-Adresse verbindet. Hat ebenfalls einen Thread laufen, in welchem per Network Streams mit dem Server(Laptop/PC) kommuniziert wird. Ist ein Singelton.
+\subsubsection{Wichtige Fields/Properties}
+Name: inputHandler
+\newline
+Info: Delegate auf welches man eine Methode der Signatur: BeispielName(string key,string value) hängen kann. Wird aufgerufen wenn neue Daten per Network Stream eintreffen und es noch keinen vordefinierten Befehl für sie gibt.
+\newline \newline
+Name: restartHandler
+\newline
+Info: Delegate auf welches man eine Methode der Signatur: BeispielName() hängen kann. Wird aufgerufen wenn CanRestart vom Server geschickt wird.
+\newline
+\subsubsection{Wichtige Methoden}
+Name: getInstance()
+\newline
+Parameter: keine
+\newline
+Returnvalue: PlayerManager
+\newline
+Info: Singelton Konstruktor
+\newline \newline
+Name: sendData()
+\newline
+Parameter: string key, string value
+\newline
+Returnvalue: void
+\newline
+Info: schickt dem TCPClient per Network Stream ein Key-Value-Pair. Beim Senden mehrerer value müssen diese hier alle bereits in dem value Parameter vorhanden sein und mit einem “:” getrennt sein.
+\newline \newline
+Name: rename()
+\newline 
+Parameter: string name
+\newline
+Returnvalue: void
+\newline
+Info: Einfache Methode welche es ermöglicht den Player schnell umzubenennen.
+\newline 
