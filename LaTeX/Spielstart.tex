@@ -1,4 +1,4 @@
-\section{Spielstart} \label{sec:spielstart}
+\section{Spielstart (DM)} \label{sec:spielstart}
 Sobald der erste verbundene Spieler ein Spiel ausgesucht hat, indem er darauf geklickt hat, und die Gruppengröße für das Spiel in Ordnung ist, wird die ID des Spieles an den Server geschickt.
 Dieser sucht sich sowohl die Downloadlinks für die Client-Dateien, als auch für seine eigenen Server-Dateien. Anschließend überprüft er, ob das Spiel schon alle nötigen Dateien für die aktuelle Version heruntergeladen hat. Falls nicht wird das nachgeholt und anschließend werden die Download URLs für die Clients an alle verbundenen Spieler geschickt. Diese überprüfen auch deren Existenz und laden fehlende herunter. Verfügt ein Client über alle Dateien, so schickt er ein „ok“ an den Server. Sobald der Server Bestätigungen aller Clients erhalten hat, startet er seine Szene. Und schickt ein „ok“ an alle Clients, worauf hin diese auch deren Szenen starten. Dieser Ablauf ähnelt dem zwei Phasen Commit bei verteilten Datenbanken, wodurch die Sicherheit dieses Systems bewiesen ist.
 \begin{figure}
