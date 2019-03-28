@@ -2,10 +2,7 @@
 \section{Netzwerkverbindungen (ES)}
 \subsection{TCP}
 \subsubsection{Definition}
-Das Transmission Control Protocol (TCP) ist ein zuverlässiges, verbindungsorientiertes, Bytestrom Protokoll. Die Hauptaufgabe von TCP besteht in der Bereitstellung eines sicheren Transports von Daten durch das Netzwerk. TCP ist im RFC 793 definiert. Diese Definitionen wurden im Laufe der Zeit von Fehlern und Inkonsistenzen befreit (RFC 1122) und um einige Anforderungen ergänzt (RFC 1323).
-
-Das Transmission Control Protocol stellt die Zuverlässigkeit der Datenübertragung mit einem Mechanismus, der als Positive Acknowledgement with Re-Transmission (PAR) bezeichnet wird, bereit. Dies bedeutet nichts anderes als das, daß das System, welches Daten sendet, die Übertragung der Daten solange wiederholt, bis vom Empfänger der Erhalt der Daten quittiert bzw. positiv bestätigt wird. Die Dateneinheiten, die zwischen den sendenden und empfangenden TCP-Einheiten ausgetauscht werden, heißen Segmente. Ein TCP-Segment besteht aus einem mindestens 20 Byte großen Protokollkopf und den zu übertragenden Daten. In jedem dieser Segmente ist eine Prüfsumme enthalten, anhand derer der Empfänger prüfen kann, ob die Daten fehlerfrei sind. Im Falle einer fehlerfreien Übertragung sendet der Empfänger eine Empfangsbestätigung an den Sender. Andernfalls wird das Datengramm verworfen und keine Empfangsbestätigung verschickt. Ist nach einer bestimmten Zeitperiode (timeout-period) beim Sender keine Empfangsbestätigung eingetroffen, verschickt der Sender das betreffende Segment erneut. 
-
+Das Transmission Control Protocol (TCP) ist ein zuverlässiges, verbindungsorientiertes, Bytestrom Protokoll. Die Hauptaufgabe von TCP besteht in der Bereitstellung eines sicheren Transports von Daten durch das Netzwerk. TCP ist im RFC 793 definiert. Diese Definitionen wurden im Laufe der Zeit von Fehlern und Inkonsistenzen befreit (RFC 1122) und um einige Anforderungen ergänzt (RFC 1323). Das Transmission Control Protocol stellt die Zuverlässigkeit der Datenübertragung mit einem Mechanismus, der als Positive Acknowledgement with Re-Transmission (PAR) bezeichnet wird, bereit. Dies bedeutet nichts anderes als das, daß das System, welches Daten sendet, die Übertragung der Daten solange wiederholt, bis vom Empfänger der Erhalt der Daten quittiert bzw. positiv bestätigt wird. Die Dateneinheiten, die zwischen den sendenden und empfangenden TCP-Einheiten ausgetauscht werden, heißen Segmente. Ein TCP-Segment besteht aus einem mindestens 20 Byte großen Protokollkopf und den zu übertragenden Daten. In jedem dieser Segmente ist eine Prüfsumme enthalten, anhand derer der Empfänger prüfen kann, ob die Daten fehlerfrei sind. Im Falle einer fehlerfreien Übertragung sendet der Empfänger eine Empfangsbestätigung an den Sender. Andernfalls wird das Datengramm verworfen und keine Empfangsbestätigung verschickt. Ist nach einer bestimmten Zeitperiode (timeout-period) beim Sender keine Empfangsbestätigung eingetroffen, verschickt der Sender das betreffende Segment erneut. 
 \subsubsection{Verifizierung}
 TCP ist ein verbindungsorientiertes Protokoll. Verbindungen werden über ein Dreiwege-Handshake (three-way handshake) aufgebaut. Über das Dreiwege-Handshake werden Steuerinformationen ausgetauscht, die die logische Ende-zu-Ende-Verbindung etablieren. Zum Aufbau einer Verbindung sendet ein Host (Host 1) einem anderen Host (Host 2), mit dem er eine Verbindung aufbauen will, ein Segment, in dem das SYN-Flag gesetzt ist. Mit diesem Segment teilt Host 1 Host 2 mit, das der Aufbau einer Verbindung gewünscht wird. Die Sequenznummer des von Host 1 gesendeten Segments gibt Host 2 außerdem an, welche Sequenznummer Host 1 zur Datenübertragung verwendet. Sequenznummern sind notwendig, um sicherzustellen, daß die Daten vom Sender in der richtigen Reihenfolge beim Empfänger ankommen. Der empfangende Host 2 kann die Verbindung nun annehmen oder ablehnen. Nimmt er die Verbindung an, wird ein Bestätigungssegment gesendet. In diesem Segment sind das SYN-Bit und das ACK-Bit gesetzt. Im Feld für die Quittungsnummer bestätigt Host 2 die Sequenznummer von Host 1, dadurch, daß die um Eins erhöhte Sequenznummer von Host 1 gesendet wird. Die Sequenznummer des Bestätigungssegments von Host 2 an Host 1 informiert Host 1 darüber, mit welcher Sequenznummer beginnend Host 2 die Daten empfängt. Schlußendlich bestätigt Host 1 den Empfang des Bestätigungssegments von Host 2 mit einem Segment, in dem das ACK-Flag gesetzt ist und die um Eins erhöhte Sequenznummer von Host 2 im Quittungsnummernfeld eingetragen ist. Mit diesem Segment können auch gleichzeitig die ersten Daten an Host 2 übertragen werden. Nach dem Austausch dieser Informationen hat Host 1 die Bestätigung, daß Host 2 bereit ist Daten zu empfangen. Die Datenübertragung kann nun stattfinden. Eine TCP-Verbindung besteht immer aus genau zwei Endpunkten (Punkt-zu-Punkt-Verbindung).
 \begin{figure}
@@ -15,132 +12,132 @@ TCP ist ein verbindungsorientiertes Protokoll. Verbindungen werden über ein Dre
     \caption{three-way handshake}
     \label{img:three-way handshake}
 \end{figure}
-\subsection{TCP Client}
+\subsection{TCP Client} \label{tcpclient}
 \subsubsection{Übersicht}
 Stellt Clientverbindungen für TCP-Netzwerkdienste bereit. Die TCPClient Klasse bietet einfache Methoden zum Herstellen einer Verbindung, senden und empfangen von Daten. Der TCPClient verbindet sich mit einem TCPListener und stellt danach einen Network Stream zur Verfügung welcher ausgelesen werden kann und auf welchem geschrieben werden kann. Zum Verbinden mit einem TCPListener gibt es zwei Möglichkeiten:
 Der TCPClient stellt “Connect” Methoden zur Verfügung
 Einen TCPClient erstellen unter Angabe der IP-Adresse und des Ports. Im Konstruktor wird dann die Verbindung automatisch hergestellt.
 Wenn die Verbindung besteht kann mit .GetStream() der Network Stream des TCPClients abrufen und diesen mit .Read(Byte[],Int32,Int32) auslesen oder diesen mit .Write(Byte[],Int32,Int32) beschreiben. Wenn der Kommunikationsaustausch abgeschlossen ist sollte der TCPClient mit .Close(Int32) geschlossen werden.
 \subsubsection{Konstruktoren}
-Name: TcpClient()
+Name: \textbf{TcpClient()}
 \newline
 Info: Erstellt einen TCPClient der noch zu keinem TCPListener verbunden ist.
 \newline
 \newline
-Name: TcpClient(IPEndpoint)
+Name: \textbf{TcpClient(IPEndpoint)}
 \newline
 Info: Erstellt einen TCPClient welcher sich im Konstruktor bereits zu dem angegebenen IPEndpoint verbindet.
 \newline
 \newline
-Name: TcpClient(string, Int32)
+Name: \textbf{TcpClient(string, Int32)}
 \newline
 Info: Erstellt einen TCPClient welcher sich im Konstruktor bereits zu der als string angegebenen IP-Adresse und dem als Int32 angegebenen Port verbindet.
 \subsubsection{Methoden}
-Name: Close()
+Name: \textbf{Close()}
 \newline
 Info: Schließt die Verbindung zum Remotehost
 \newline
 \newline
-Name: Connect()
+Name: \textbf{Connect()}
 \newline
 Info: Verbindet den TCPClient mit dem Remotehost. Dazu gibt es verschiedene Parameter; 
 \newline \tab \newline
-- Connect(IPAdress, Int32), wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
+- \textit{Connect(IPAdress, Int32)}, wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
 \newline \tab \newline
-- Connect(IPAdress[], Int32), wird benutzt wenn der Remotehost mehrere DNS-Einträge hat und man nicht genau weiß welcher der richtige ist. Es wird eine Liste aller IP-Adressen mitgegeben, wobei es sich auch hier um IPAdress-Objekte handelt. Auch hier wird der Port als zweiter Parameter als Int32 mitgegeben.
+- \textit{Connect(IPAdress[], Int32)}, wird benutzt wenn der Remotehost mehrere DNS-Einträge hat und man nicht genau weiß welcher der richtige ist. Es wird eine Liste aller IP-Adressen mitgegeben, wobei es sich auch hier um IPAdress-Objekte handelt. Auch hier wird der Port als zweiter Parameter als Int32 mitgegeben.
 \newline \tab \newline
-- Connect(IPEndPoint), hier wird direkt ein IPEndPoint-Objekt mitgegeben, welches bereits alle relevanten Infos über den Remotehost beinhaltet.
+- \textit{Connect(IPEndPoint)}, hier wird direkt ein IPEndPoint-Objekt mitgegeben, welches bereits alle relevanten Infos über den Remotehost beinhaltet.
 \newline \tab \newline
-- Connect(string, Int32), einfachste Methode da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
+- \textit{Connect(string, Int32)}, einfachste Methode da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
 \newline
 \newline
-Name: ConnectAsync()
+Name: \textbf{ConnectAsync()}
 Info: Verbindet den TCPClient mit dem Remotehost asynchron. Dazu gibt es verschiedene Parameter; 
 \newline \tab \newline
-- ConnectAsync(IPAdress, Int32), wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
+- \textit{ConnectAsync(IPAdress, Int32)}, wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
 \newline \tab \newline
-- ConnectAsync(IPAdress[], Int32), wird benutzt wenn der Remotehost mehrere DNS-Einträge hat und man nicht genau weiß welcher der richtige ist. Es wird eine Liste aller IP-Adressen mitgegeben, wobei es sich auch hier um IPAdress-Objekte handelt. Auch hier wird der Port als zweiter Parameter als Int32 mitgegeben.
+- \textit{ConnectAsync(IPAdress[], Int32)}, wird benutzt wenn der Remotehost mehrere DNS-Einträge hat und man nicht genau weiß welcher der richtige ist. Es wird eine Liste aller IP-Adressen mitgegeben, wobei es sich auch hier um IPAdress-Objekte handelt. Auch hier wird der Port als zweiter Parameter als Int32 mitgegeben.
 \newline \tab \newline
-- ConnectAsync(string, Int32), einfachste Methode da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
+- \textit{ConnectAsync(string, Int32)}, einfachste Methode da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
 \newline \newline
-Name: Dispose()
+Name: \textbf{Dispose()}
 \newline
 Info: Gibt alle vom TCPClient verwendeten Ressourcen frei.
 \newline \newline
-Name: GetStream()
+Name: \textbf{GetStream()}
 \newline
 Info: Gibt den Network Stream zurück, welcher für das Senden und Empfangen von Daten wichtig ist.
 \newline
 \subsubsection{Verwendung in Ludimus}
 Da Verbindung zwischen Smartphone und Server(PC/Laptop) baut auf einem Network Stream auf, also ist es notwendig die Verbindung per TCPClient und TCPListener durchzuführen. Zusätzlich bietet TCP hier viele Vorteile welche die Wahl zum TCPClient nicht schwer fiel. In Ludimus ist jedes Smartphone welches sich mit dem Server, per TCP-Verbindung, verbindet ein TCPClient welche in einer Liste gespeichert werden und so für jeden zur Verfügung stehen. Zusätzlich gibt es die .SendData(string key,string value) Methode welche den zugriff auf den Network Stream über den TCPClient löst. 
-\subsection{TCP Listener}
+\subsection{TCP Listener} \label{tcplistener}
 \subsubsection{Übersicht}
 Die TCPListener-Klasse bietet einfache Methoden, die das akzeptieren von eingehenden Verbindungsanfragen. Die TCPListener Klasse wird zusammen mit dem TCPClient benutzt um eine Verbindung miteinander aufzubauen und per Network Stream zu kommunizieren. Dem TCPListener selbst wird dabei im Konstruktor, als Parameter, die IP-Adresse und den Port , auf welchem der TCPListener hören soll mitgegeben. Als IP-Adresse kann auch Any mitgegeben werden um den TCPListener auf der lokalen IP laufen zu lassen. Um den TCPListener zu starten muss einfach .Start() aufgerufen werden und schon horcht der TCPListener auf der angegeben IP-Adresse und Port. Eingehende Verbindungsanfragen werden in eine Warteschlange gereiht. Mit .AcceptSocket() oder .AcceptTCPClient() wird die erste Verbindungsanfrage aus der Warteschlange genommen und kann dann an einen TCPClient weitergegeben werden. Die .AcceptSocket() und .AcceptTcpClient() Methoden blockieren jedoch und warten bis auch wirklich eine Verbindungsanfrage kommt. Diese beiden Methoden in einem Thread auslagern macht durchaus Sinn. Wenn man jedoch keinen Thread benutzen will kann man auch einfach mit der .Pending() Methode abfragen ob in Warteschlange etwas eingereiht ist. Mit der .Stop() Methode kann der TCPListener gestoppt werden. Die .Stop() Methode jedoch schließt nicht alle vorhandenen TCPClient Verbindungen, diese danach noch sauber zu schließen liegt in der Hand des Programmierers.
 \subsubsection{Konstruktoren}
-Name: TcpListener(Int32)
+Name: \textbf{TcpListener(Int32)}
 \newline
 Info: Erstellt einen TCPListener welcher auf dem, als Int32 angegebenen, Port horcht.
 \newline \newline
-Name: TcpListener(IPAdress, Int32)
+Name: \textbf{TcpListener(IPAdress, Int32)}
 \newline
 Info:  Erstellt einen TCPListener welcher auf der lokalen, als IPAdress Objekt übergebenen, IP-Adresse und dem, als Int32 angegebenen, Port horcht.
 \newline \newline
-Name: TcpListener(IPEndpoint)
+Name: \textbf{TcpListener(IPEndpoint)}
 \newline
 Info: Erstellt einen TCPListener welcher auf dem angegebenen IPEndpoint horcht.
 \newline \newline
 \subsubsection{Methoden}
-Name: AcceptSocket()
+Name: \textbf{AcceptSocket()}
 \newline
 Info: Gibt den ersten Socket in der Request-Warteschlange zurück. Blockiert den Thread, in welchem die Methode aufgerufen wurde.
 \newline \newline
-Name: AcceptSocketAsync()
+Name: \textbf{AcceptSocketAsync()}
 \newline
 Info: Gibt den ersten Socket in der Request-Warteschlange zurück. Wird asynchron ausgeführt.
 \newline \newline
-Name: AcceptTcpClient()
+Name: \textbf{AcceptTcpClient()}
 \newline
 Info: Gibt den ersten TcpClient in der Request-Warteschlange zurück. Blockiert den Thread, in welchem die Methode aufgerufen wurde.
 \newline \newline
-Name: AcceptTcpClient()
+Name: \textbf{AcceptTcpClientAsnyc()}
 \newline
 Info: Gibt den ersten TcpClient in der Request-Warteschlange zurück. Wird asynchron ausgeführt.
 \newline \newline
-Name: Start()
+Name: \textbf{Start()}
 \newline
 Info: Der TcpListener startet und wartet ab jetzt auf eingehende Verbindungsanfragen.
 \newline \newline
-Name: Stop()
+Name: \textbf{Stop()}
 \newline
 Info: Der TcpListener stoppt und horcht nicht mehr auf eingehende Verbindungsanfragen. Wichtig ist hierbei jedoch, dass durch Stop nicht die TcpClient Verbindungen sauber geschlossen werden.
 \newline \newline
 \subsubsection{Implementierung in Ludimus}
 In der PC/Laptop App wird beim Starten ein TCPListener gestartet welcher auf die eingehenden Verbindungsanfragen der Smartphones, auf welchen ein TCPClient läuft, horcht. Der TCPListener nimmt maximal acht Verbindungen an. Er wird in einem extra Thread geöffnet welcher permanent im Hintergrund läuft, somit wird, bis acht Verbindungen erreicht wurden, permanent auf Verbindungsanfragen geachtet. Wenn eine Verbindungsanfrage ankommt wird sie mit hilfe der .AcceptTcpClient() Methode angenommen und einem Player-Objekt übergeben.
-\subsection{Network Streams}
+\subsection{Network Streams} \label{ns}
 \subsubsection{Übersicht}
 Network Ressourcen werden im .Net Framework als Streams angesehen, diese heißen dann Network Streams. Eigenschaften von Network Stream sind unter anderem, dass sie egal welchen Datentyp sie senden oder lesen, dies mit den .Write() und .Read() Methoden möglich ist. Außerdem sind sie sehr ähnlich wie die anderen im .Net Framework oft benutzten Streams sind. Der einzige unterschied ist das die Network Streams nicht suchbar sind. Die .Seek() und .Position() Methoden werfen bei Network Streams eine NotSupportedException. Network Streams sind ein Teil des System.Net.Sockets Namespaces. Die Network Stream Klasse bietet Methoden für das Senden und Empfangen von Daten, dabei hat die Network Stream Klasse Methoden für asynchrones und synchrones Senden und Empfangen. Um einen Network Stream zu bekommen muss bereits vorher eine Socket oder TCP Verbindung zwischen den beiden kommunizierenden Geräten vorhanden sein. Wichtig hier ist aber, dass wenn man den Network Stream schließt nicht automatisch auch die Socket oder TCP Verbindung schließt. Um das ganze synchron zu machen reichen die oben bereits angesprochenen .Write() und .Read() Methoden welche komplett ausreichen jedoch den jeweiligen Thread blockieren. Um das ganze asynchron zu machen sollte man die .BeginRead()/.EndRead() und .BeginWrite()/.EndWrite Methoden benutzen. Diese geben ein IAsyncResult zurück und sind damit dafür besser geeignet. Solange man jedoch einen eigenen Thread für die .Write() und für die .Read() Methode hat können beide synchron auf dem Network Stream eingesetzt werden. 
 \subsubsection{Methoden}
-Name: Close(Int32)
+Name: \textbf{Close(Int32)}
 \newline
 Info: Schließt dem Network Stream nach einer, durch Parameter angegebenen, Zeit in welcher noch Daten über den Network Stream gesendet werden.
 \newline \newline
-Name: CopyTo(Stream,Int32)
+Name: \textbf{CopyTo(Stream,Int32)}
 \newline
 Info: Kopiert den gesamten Network Stream in einen anderen Stream, welcher durch die Parameter angegeben wird. Zusätzlich kann, in Form eines Int32 auch eine Buffergröße angegeben werden, diese dient zur Beschränkung des kopierten Bereichs.
 \newline \newline
-Name: Dispose()
+Name: \textbf{Dispose()}
 \newline
 Info: Gibt alle vom Network Stream benutzten Methoden frei.
 \newline \newline
-Name: Flush()
+Name: \textbf{Flush()}
 \newline
 Info: Löscht die kompletten Daten des Streams.
 \newline \newline
-Name: Read(Byte[],Int32,Int32)
+Name: \textbf{Read(Byte[],Int32,Int32)}
 \newline
 Info: Lest den Network Stream. Das Byte Array gibt dabei die den Buffer an aus in welchem die empfangen Daten geschrieben werden. Der zweite Parameter gibt an, an welcher Stelle angefangen wird in den Buffer zu schreiben und der dritte Parameter gibt an wie viel eingelesen werden soll.
 \newline \newline
-Name: Write(Byte[],Int32,Int32)
+Name: \textbf{Write(Byte[],Int32,Int32)}
 \newline
 Info: Schreibt in den Network Stream. Das Byte Array gibt dabei die den Buffer an welcher die Daten speichert die versendet werden. Der zweite Parameter gibt an, an welcher Stelle des Buffers angefangen wird zu senden und der dritte Parameter gibt an wie viel vom Buffer versendet werden soll.
 \newline \newline
