@@ -34,7 +34,7 @@ Bei der Desktop Anwendung von Ludimus gibt es zunächst einen PlayerManager, die
 - \textbf{CloseConnection:} beendet die Verbindung mit dem TCPClient sauber.
 \newline \tab 
 - \textbf{Playername:} Setzt den Spielernamen auf den auf “Playername” folgenden String
-\subsection{Adroid/IOS}
+\subsection{Android/IOS}
 Bei Android/IOS ist das ganze etwas einfacher, hier gibt es nur den ClientController, da hier nur ein TCPClient, welcher sich auf die eingegebene IP-Adresse(durch Lobbycode) verbindet. Es werden direkt am Start auch noch alle nötigen Infos angefragt und gesendet, die benötigt werden damit das Playerhandling am PC/Laptop einwandfrei funktioniert. Auch hier wird die Unity Queue benutzt um im Main Thread die wichtigen Befehle auszuführen. Standard sind hierbei die Befehle:
 \newline \tab
 - \textbf{CloseConnection:} Beenden der Anwendung und sauberes schließen der \newline \tab TCPClient Verbindung.
