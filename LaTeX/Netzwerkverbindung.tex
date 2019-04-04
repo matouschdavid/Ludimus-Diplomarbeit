@@ -12,25 +12,25 @@ TCP ist ein verbindungsorientiertes Protokoll. Verbindungen werden über ein Dre
     \caption{three-way handshake}
     \label{img:three-way handshake}
 \end{figure}
-\subsection{TCP Client} \label{tcpclient} %Schreibweise ?
+\subsection{TCP-Client} \label{TCP-Client} %Schreibweise ?
 \subsubsection{Übersicht}
-Stellt Clientverbindungen für TCP-Netzwerkdienste bereit. Die TCPClient Klasse bietet einfache Methoden zum Herstellen einer Verbindung, senden und empfangen von Daten. Der TCPClient verbindet sich mit einem TCPListener und stellt danach einen Network Stream zur Verfügung, welcher ausgelesen werden kann und auf welchem geschrieben werden kann. Zum Verbinden mit einem TCPListener gibt es zwei Möglichkeiten:
-Der TCPClient stellt “Connect” Methoden zur Verfügung, oder man kann im Konstruktor bereits die IP-Adresse und den Port angeben. Im Konstruktor wird dann die Verbindung automatisch hergestellt.
-Wenn die Verbindung besteht, kann mit .GetStream() der Network Stream des TCPClients abrufen und diesen mit .Read(Byte[],Int32,Int32) auslesen oder diesen mit .Write(Byte[],Int32,Int32) beschreiben. Wenn der Kommunikationsaustausch abgeschlossen ist, sollte der TCPClient mit .Close(Int32) geschlossen werden.
+Der TCP-Client stellt Clientverbindungen für TCP-Netzwerkdienste bereit. Die TCP-Client Klasse bietet einfache Methoden zum Herstellen einer Verbindung, senden und empfangen von Daten. Der TCP-Client verbindet sich mit einem TCP-Listener und stellt danach einen Network Stream zur Verfügung, welcher ausgelesen werden kann und auf welchem geschrieben werden kann. Zum Verbinden mit einem TCP-Listener gibt es zwei Möglichkeiten:
+Der TCP-Client stellt “Connect” Methoden zur Verfügung, oder man kann im Konstruktor bereits die IP-Adresse und den Port angeben. Im Konstruktor wird dann die Verbindung automatisch hergestellt.
+Wenn die Verbindung besteht, kann mit .GetStream() der Network Stream des TCP-Clients abrufen und diesen mit .Read(Byte[],Int32,Int32) auslesen oder diesen mit .Write(Byte[],Int32,Int32) beschreiben. Wenn der Kommunikationsaustausch abgeschlossen ist, sollte der TCP-Client mit .Close(Int32) geschlossen werden.
 \subsubsection{Konstruktoren}
-Name: \textbf{TcpClient()}
+Name: \textbf{TCPClient()}
 \newline
-Info: Erstellt einen TCPClient, der noch zu keinem TCPListener verbunden ist.
-\newline
-\newline
-Name: \textbf{TcpClient(IPEndpoint)}
-\newline
-Info: Erstellt einen TCPClient, welcher sich im Konstruktor bereits zu dem angegebenen IPEndpoint verbindet.
+Info: Erstellt einen TCP-Client, der noch zu keinem TCP-Listener verbunden ist.
 \newline
 \newline
-Name: \textbf{TcpClient(string, Int32)}
+Name: \textbf{TCPClient(IPEndpoint)}
 \newline
-Info: Erstellt einen TCPClient, welcher sich im Konstruktor bereits zu der als string angegebenen IP-Adresse und dem als Int32 angegebenen Port verbindet.
+Info: Erstellt einen TCP-Client, welcher sich im Konstruktor bereits zu dem angegebenen IPEndpoint verbindet.
+\newline
+\newline
+Name: \textbf{TCPClient(string, Int32)}
+\newline
+Info: Erstellt einen TCP-Client, welcher sich im Konstruktor bereits zu der als String angegebenen IP-Adresse und dem als Int32 angegebenen Port verbindet.
 \subsubsection{Methoden}
 Name: \textbf{Close()}
 \newline
@@ -39,7 +39,7 @@ Info: Schließt die Verbindung zum Remotehost.
 \newline
 Name: \textbf{Connect()}
 \newline
-Info: Verbindet den TCPClient mit dem Remotehost. Dazu gibt es verschiedene Parameter:
+Info: Verbindet den TCP-Client mit dem Remotehost. Dazu gibt es verschiedene Parameter:
 \newline \tab \newline
 - \textit{Connect(IPAdress, Int32)}, wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
 \newline \tab \newline
@@ -47,43 +47,44 @@ Info: Verbindet den TCPClient mit dem Remotehost. Dazu gibt es verschiedene Para
 \newline \tab \newline
 - \textit{Connect(IPEndPoint)}: Hier wird direkt ein IPEndPoint-Objekt mitgegeben, welches bereits alle relevanten Infos über den Remotehost beinhaltet.
 \newline \tab \newline
-- \textit{Connect(string, Int32)}: Die einfachste Methode, da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
+- \textit{Connect(string, Int32)}: Die einfachste Methode, da hier die IP-Adresse einfach als String mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
 \newline
 \newline
 Name: \textbf{ConnectAsync()}
 \newline
-Info: Verbindet den TCPClient mit dem Remotehost asynchron. Dazu gibt es verschiedene Parameter:
+Info: Verbindet den TCP-Client mit dem Remotehost asynchron. Dazu gibt es verschiedene Parameter:
 \newline \tab \newline
 - \textit{ConnectAsync(IPAdress, Int32)}, wobei hier die IP-Adresse bereits als IPAdress-Objekt und der Port als Int32 mitgegeben wird.
 \newline \tab \newline
 - \textit{ConnectAsync(IPAdress[], Int32)} wird benutzt wenn der Remotehost mehrere DNS-Einträge hat und man nicht genau weiß welcher der richtige ist. Es wird eine Liste aller IP-Adressen mitgegeben, wobei es sich auch hier um IPAdress-Objekte handelt. Auch hier wird der Port als zweiter Parameter als Int32 mitgegeben.
 \newline \tab \newline
-- \textit{ConnectAsync(string, Int32)}: Die einfachste Methode, da hier die IP-Adresse einfach als string mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
+- \textit{ConnectAsync(string, Int32)}: Die einfachste Methode, da hier die IP-Adresse einfach als String mitgegeben wird. Auch hier wird als zweiter Parameter der Port als Int32 angegeben.
 \newline \newline
 Name: \textbf{Dispose()}
 \newline
-Info: Gibt alle vom TCPClient verwendeten Ressourcen frei.
+Info: Gibt alle vom TCP-Client verwendeten Ressourcen frei.
 \newline \newline
 Name: \textbf{GetStream()}
 \newline
 Info: Gibt den Network Stream zurück, welcher für das Senden und Empfangen von Daten wichtig ist.
 \newline
 \subsubsection{Verwendung in Ludimus}
-Die Verbindung zwischen Smartphone und Server(PC/Laptop) baut auf einem Network Stream auf, also ist es notwendig die Verbindung per TCPClient und TCPListener durchzuführen. Zusätzlich bietet TCP, hier viele Vorteile weshalb die Wahl zum TCPClient nicht schwer fiel. In Ludimus ist jedes Smartphone, welches sich mit dem Server, per TCP-Verbindung, verbindet, ein TCPClient, welche in einer Liste gespeichert werden und so für jeden zur Verfügung stehen. Zusätzlich gibt es die .SendData(string key,string value) Methode welche den Zugriff auf den Network Stream über den TCPClient löst.\subsection{TCP Listener} \label{tcplistener}
+Die Verbindung zwischen Smartphone und Server(PC/Laptop) baut auf einem Network Stream auf, also ist es notwendig die Verbindung per TCP-Client und TCP-Listener durchzuführen. Zusätzlich bietet TCP, hier viele Vorteile weshalb die Wahl zum TCP-Client nicht schwer fiel. In Ludimus ist jedes Smartphone, welches sich mit dem Server, per TCP-Verbindung, verbindet, ein TCP-Client, welcher in einer Liste gespeichert wird und so für jeden zur Verfügung stehen. Zusätzlich gibt es die .SendData(string key,string value) Methode welche den Zugriff auf den Network Stream über den TCP-Client löst.
+\subsection{TCP-Listener} \label{TCP-Listener}
 \subsubsection{Übersicht}
-Die TCPListener Klasse bietet einfache Methoden, die das akzeptieren von eingehenden Verbindungsanfragen erlauben. Die TCPListener Klasse wird zusammen mit dem TCPClient benutzt, um eine Verbindung miteinander aufzubauen und per Network Stream zu kommunizieren. Dem TCPListener selbst wird dabei im Konstruktor als Parameter die IP-Adresse und der Port, auf welchem der TCPListener hören soll, mitgegeben. Als IP-Adresse kann auch Any mitgegeben werden, um den TCPListener auf der lokalen IP laufen zu lassen. Um den TCPListener zu starten, muss einfach .Start() aufgerufen werden und schon horcht der TCPListener auf der angegeben IP-Adresse und Port. Eingehende Verbindungsanfragen werden in eine Warteschlange gereiht. Mit .AcceptSocket() oder .AcceptTCPClient() wird die erste Verbindungsanfrage aus der Warteschlange genommen und kann dann an einen TCPClient weitergegeben werden. Die .AcceptSocket() und .AcceptTcpClient() Methoden blockieren jedoch und warten bis auch wirklich eine Verbindungsanfrage kommt. Diese beiden Methoden in einen Thread auslagern macht durchaus Sinn. Wenn man jedoch keinen Thread benutzen will, kann man auch einfach mit der .Pending() Methode abfragen, ob in der Warteschlange etwas eingereiht ist. Mit der .Stop() Methode kann der TCPListener gestoppt werden. Die .Stop() Methode jedoch schließt nicht alle vorhandenen TCPClient Verbindungen. Diese danach noch sauber zu schließen liegt in der Hand des Programmierers.
+Die TCP-Listener Klasse bietet einfache Methoden, die das akzeptieren von eingehenden Verbindungsanfragen erlauben. Die TCP-Listener Klasse wird zusammen mit dem TCP-Client benutzt, um eine Verbindung miteinander aufzubauen und per Network Stream zu kommunizieren. Dem TCP-Listener selbst wird dabei im Konstruktor als Parameter die IP-Adresse und der Port, auf welchem der TCP-Listener hören soll, mitgegeben. Als IP-Adresse kann auch Any mitgegeben werden, um den TCP-Listener auf der lokalen IP-Adresse laufen zu lassen. Um den TCP-Listener zu starten, muss einfach .Start() aufgerufen werden und somit horcht der TCP-Listener auf der angegeben IP-Adresse und Port. Eingehende Verbindungsanfragen werden in eine Warteschlange gereiht. Mit .AcceptSocket() oder .AcceptTCP-Client() wird die erste Verbindungsanfrage aus der Warteschlange genommen und kann dann an einen TCP-Client weitergegeben werden. Die .AcceptSocket() und .AcceptTCP-Client() Methoden blockieren jedoch und warten bis auch wirklich eine Verbindungsanfrage kommt. Diese beiden Methoden in einen Thread auslagern macht durchaus Sinn. Wenn man jedoch keinen Thread benutzen will, kann man auch einfach mit der .Pending() Methode abfragen, ob in der Warteschlange eine Verbindungsanfrage eingereiht ist. Mit der .Stop() Methode kann der TCP-Listener gestoppt werden. Die .Stop() Methode jedoch schließt nicht alle vorhandenen TCP-Client Verbindungen. Diese danach noch sauber zu schließen liegt in der Hand des Programmierers.
 \subsubsection{Konstruktoren}
-Name: \textbf{TcpListener(Int32)}
+Name: \textbf{TCPListener(Int32)}
 \newline
-Info: Erstellt einen TCPListener, welcher auf dem als Int32 angegebenen Port horcht.
+Info: Erstellt einen TCP-Listener, welcher auf dem als Int32 angegebenen Port horcht.
 \newline \newline
-Name: \textbf{TcpListener(IPAdress, Int32)}
+Name: \textbf{TCPListener(IPAdress, Int32)}
 \newline
-Info:  Erstellt einen TCPListener, welcher auf der lokalen, als IPAdress Objekt übergebenen IP-Adresse und dem als Int32 angegebenen Port horcht.
+Info:  Erstellt einen TCP-Listener, welcher auf der lokalen, als IPAdress Objekt übergebenen IP-Adresse und dem als Int32 angegebenen Port horcht.
 \newline \newline
-Name: \textbf{TcpListener(IPEndpoint)}
+Name: \textbf{TCPListener(IPEndpoint)}
 \newline
-Info: Erstellt einen TCPListener, welcher auf dem angegebenen IPEndpoint horcht.
+Info: Erstellt einen TCP-Listener, welcher auf dem angegebenen IPEndpoint horcht.
 \newline \newline
 \subsubsection{Methoden}
 Name: \textbf{AcceptSocket()}
@@ -94,27 +95,27 @@ Name: \textbf{AcceptSocketAsync()}
 \newline
 Info: Gibt den ersten Socket in der Request-Warteschlange zurück. Wird asynchron ausgeführt.
 \newline \newline
-Name: \textbf{AcceptTcpClient()}
+Name: \textbf{AcceptTCPClient()}
 \newline
-Info: Gibt den ersten TcpClient in der Request-Warteschlange zurück. Blockiert den Thread, in welchem die Methode aufgerufen wurde.
+Info: Gibt den ersten TCP-Client in der Request-Warteschlange zurück. Blockiert den Thread, in welchem die Methode aufgerufen wurde.
 \newline \newline
-Name: \textbf{AcceptTcpClientAsnyc()}
+Name: \textbf{AcceptTCPClientAsnyc()}
 \newline
-Info: Gibt den ersten TcpClient in der Request-Warteschlange zurück. Wird asynchron ausgeführt.
+Info: Gibt den ersten TCP-Client in der Request-Warteschlange zurück. Wird asynchron ausgeführt.
 \newline \newline
 Name: \textbf{Start()}
 \newline
-Info: Der TcpListener startet und wartet ab jetzt auf eingehende Verbindungsanfragen.
+Info: Der TCP-Listener startet und wartet ab jetzt auf eingehende Verbindungsanfragen.
 \newline \newline
 Name: \textbf{Stop()}
 \newline
-Info: Der TcpListener stoppt und horcht nicht mehr auf eingehende Verbindungsanfragen. Wichtig: Durch Stop werden die TcpClient Verbindungen nicht sauber geschlossen.
+Info: Der TCP-Listener stoppt und horcht nicht mehr auf eingehende Verbindungsanfragen. Wichtig: Durch Stop werden die TCP-Client Verbindungen nicht sauber geschlossen.
 \newline \newline
 \subsubsection{Implementierung in Ludimus}
-Beim Starten der PC/Laptop App wird in TCPListener gestartet, welcher auf die eingehenden Verbindungsanfragen der Smartphones, auf welchen ein TCPClient läuft, horcht. Der TCPListener nimmt maximal acht Verbindungen an. Er wird in einem extra Thread geöffnet, welcher permanent im Hintergrund läuft. Somit wird, bis acht Verbindungen erreicht wurden, permanent auf Verbindungsanfragen geachtet. Wenn eine Verbindungsanfrage ankommt wird sie mit hilfe der .AcceptTcpClient() Methode angenommen und einem Player-Objekt übergeben.
+Beim Starten der PC/Laptop App wird ein TCP-Listener gestartet, welcher auf die eingehenden Verbindungsanfragen der Smartphones, auf welchen ein TCP-Client läuft, horcht. Der TCP-Listener nimmt maximal acht Verbindungen an. Er wird in einem extra Thread geöffnet, welcher permanent im Hintergrund läuft. Somit wird, bis acht Verbindungen erreicht wurden, permanent auf Verbindungsanfragen geachtet. Wenn eine Verbindungsanfrage ankommt wird sie mit hilfe der .AcceptTCP-Client() Methode angenommen und einem Player-Objekt übergeben.
 \subsection{Network Streams} \label{ns}
 \subsubsection{Übersicht}
-Network Ressourcen werden im .Net Framework als Streams angesehen, diese heißen dann Network Streams. Eigenschaften von Network Streams sind unter anderem, dass egal welchen Datentyp sie senden oder lesen, dies mit den .Write() und .Read() Methoden möglich ist. Außerdem sind sie sehr ähnlich wie die anderen im .Net Framework oft benutzten Streams. Der einzige Unterschied ist, dass die Network Streams nicht suchbar sind. Die .Seek() und .Position() Methoden werfen bei Network Streams eine NotSupportedException. Network Streams sind ein Teil des System.Net.Sockets Namespaces. Die Network Stream Klasse bietet Methoden für das Senden und Empfangen von Daten, dabei hat die Network Stream Klasse Methoden für asynchrones und synchrones Senden und Empfangen. Um einen Network Stream zu bekommen muss bereits vorher eine Socket oder TCP Verbindung zwischen den beiden kommunizierenden Geräten vorhanden sein. Zu beachten ist, dass wenn man den Network Stream schließt nicht automatisch auch die Socket oder TCP Verbindung geschlossen wird, sondern der Programmierer diese noch extra sauber schließen muss. Um das ganze synchron zu machen, reichen die oben bereits angesprochenen .Write() und .Read() Methoden, die allerdings den jeweiligen Thread blockieren. Um das ganze asynchron zu machen, sollte man die .BeginRead()/.EndRead() und .BeginWrite()/.EndWrite Methoden benutzen. Diese geben ein IAsyncResult zurück und sind damit dafür besser geeignet. Solange man jedoch einen eigenen Thread für die .Write() und für die .Read() Methode hat können beide synchron auf dem Network Stream eingesetzt werden.
+Network Ressourcen werden im .Net Framework als Streams angesehen, diese heißen Network Streams. Eigenschaften von Network Streams sind unter anderem, dass egal welchen Datentyp sie senden oder lesen, dies mit den .Write() und .Read() Methoden möglich ist. Außerdem sind sie sehr ähnlich den anderen im .Net Framework oft benutzten Streams. Der einzige Unterschied ist, dass die Network Streams nicht suchbar sind. Die .Seek() und .Position() Methoden werfen bei Network Streams eine NotSupportedException. Network Streams sind ein Teil des System.Net.Sockets Namespaces. Die Network Stream Klasse bietet Methoden für das Senden und Empfangen von Daten, dabei hat die Network Stream Klasse Methoden für asynchrones und synchrones Senden und Empfangen. Um einen Network Stream zu bekommen muss bereits vorher eine Socket oder TCP Verbindung zwischen den beiden kommunizierenden Geräten vorhanden sein. Zu beachten ist, dass wenn man den Network Stream schließt nicht automatisch auch die Socket oder TCP Verbindung geschlossen wird, sondern der Programmierer diese noch extra sauber schließen muss. Um das ganze synchron zu machen, reichen die oben bereits angesprochenen .Write() und .Read() Methoden, die allerdings den jeweiligen Thread blockieren. Um das ganze asynchron zu machen, sollte man die .BeginRead()/.EndRead() und .BeginWrite()/.EndWrite Methoden benutzen. Diese geben ein IAsyncResult zurück und sind damit dafür besser geeignet. Solange man jedoch einen eigenen Thread für die .Write() und für die .Read() Methode hat können beide synchron auf dem Network Stream eingesetzt werden.
 \subsubsection{Methoden}
 Name: \textbf{Close(Int32)}
 \newline
